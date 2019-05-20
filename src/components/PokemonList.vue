@@ -11,7 +11,7 @@
             </v-flex>
         </v-layout>
         <v-layout row wrap>
-            <Pokemon v-for="(pokemon, index) in pokemonList" :key="index" :pokemon="pokemon"/>
+            <Pokemon v-for="(pokemon) in pokemonList" :key="pokemon.name" :pokemon="pokemon"/>
         </v-layout>
         <Pagination :paginaActual="paginaActual" :total="total" :limit="limit" @nextPage="nextPage()" @previousPage="previousPage()" />
     </v-container>
@@ -32,8 +32,6 @@ export default {
 
     mounted() {
         this.findPokemon();
-        this.nextPage();
-        this.previousPage();
     },
     methods: {
         async findPokemon() {
@@ -50,16 +48,25 @@ export default {
             this.paginaActual--;                        
         }
     },
- 
     data() {
         return {
             pokemonList: [],
             offset: 0,
-            limit: 20,
+            limit: 18,
             total: 0,
             paginaActual: 1,            
-            baseURL: `https://pokeapi.co/api/v2/pokemon/?offset=${this.offset}?limit=${this.limit}`
+            
         };
+    },
+    computed:{
+        baseURL(){
+            return `https://pokeapi.co/api/v2/pokemon/?offset=${this.offset}&limit=${this.limit}`
+        } 
+    },
+    watch: {
+        baseURL() {
+            this.findPokemon();
+        }
     },
 };
 </script>
